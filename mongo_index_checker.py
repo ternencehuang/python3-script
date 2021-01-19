@@ -1,8 +1,11 @@
 #! /usr/bin/python3
 """
+example:
 python3 mongo_index_checker.py -s mongodb://localhost:27017/core -d mongodb://localhost:27017/aws
+python3 mongo_index_checker.py -s mongodb://localhost:19991/core -d mongodb://dev:dev@localhost:19992/core
 
 using for check mongo index between two dbs
+result: index in source not in destination
 @Author: Ternence <xyancywong@outlook.com>
 @Time: 2021/1/18 23:02
 """
