@@ -41,7 +41,15 @@ def self_index(index):
     return False
 
 
-def generate_cmd(col, index):
+def generate_cmd(col, index, index_names):
+    seq = 0
+    name = "ix_" + str(seq)
+    seq = seq + 1
+    while name in index_names:
+        name = "ix_" + str(seq)
+        seq = seq + 1
+    index_names.append(name)
+
     cmd = "db.getCollection(\"" + col + "\").createIndex({"
     keys = index["key"]
     fir = True
@@ -49,9 +57,9 @@ def generate_cmd(col, index):
         if fir:
             fir = False
         else:
-            cmd = cmd + ", "
+            cmd = cmd + ","
         cmd = cmd + "\"" + key + "\":" + str(int(keys[key]))
-    cmd = cmd + "})"
+    cmd = cmd + "},{\"background\":true,\"name\":\"" + name + "\"})"
     return cmd
 
 
@@ -67,6 +75,10 @@ destination = pymongo.MongoClient(args.destination)[get_db(uri=args.destination)
 destination_cols = destination.list_collection_names(session=None)
 
 for col in source_cols:
+    index_names = []
+    for index in destination[col].list_indexes():
+        index_names.append(index["name"])
+
     first = True
     for index in source[col].list_indexes():
         already_have = False
@@ -77,6 +89,6 @@ for col in source_cols:
 
         if not already_have and not self_index(index):
             if first:
-                # print(col)
                 first = False
-            print(generate_cmd(col, index))
+            print(generate_cmd(col, index, index_names))
+
