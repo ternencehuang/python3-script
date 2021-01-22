@@ -64,6 +64,6 @@ elif args.mode == "load":
         for kv in kvs:
             print("load kv: " + kv)
             conn.put(kv, kvs[kv])
-    info("end save kvs...")
+    info("end load kvs...")
 else:
     error("unavailable mode")
